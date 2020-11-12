@@ -18,7 +18,7 @@ algo(Grille,words,create_dico(words[0]))  (*on prend une grille initiale, liste 
 (* Si il n'y a pas de mot à visiter dans la liste c'est a dire pas de nouveaux noeuds, on a atteint une feuille de mon arbre, la grille est remplie *)
 (* Sinon, on prend le premier mot à visiter de la liste : on voit donc un nouveau noeud, et on verifie si il y a des branches partant de ce mot *)
 (* Les branches sont ici données par les mots du dico compatibles avec ce mot/noeud à visiter *)
-(* Si il n'y a pas de mots compatibles, on ne va pas visiter le en renvoyant False et on considère le 
+(* Si il n'y a pas de mots compatibles, on ne va pas visiter le en renvoyant False et on considère le *)
 (* On prend le premier terme de la liste des mots compatibles  *)
 
 
