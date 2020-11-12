@@ -1,8 +1,6 @@
 (*MAIN*)
-open Dictionary
-open Generator
+
 open Modeler
-open Analyser
 open Display
 (* necessite les modules dictionary, generator, modeler, analyser (,display) *)
 
@@ -21,7 +19,8 @@ Generator.generate_crossword nom_grille  (*utile pour plus tard lors de series d
 (*Chargement de la grille sauvegardé avec la fct "model_crossword" du module modeler avec param  "fichier.txt" pour la modeliser en tableau pouvant être analysé *)  
 let nom_grille = "exemple.txt" in
 (* let crossword = Modeler.model_crossword nom_grille in *)
-Modeler.model_crossword nom_grille
+let structure = Modeler.model_crossword nom_grille in
+let table_grid = Modeler.get_table structure in
 
 
 (*Analyse de la grille modelisee precedemment avec la fct "analyse_crossword" du module analyser avec param le tableau grille *)
@@ -31,5 +30,5 @@ Modeler.model_crossword nom_grille
 
 
 (*Affichage du succès de la grille remplie si elle est valide ou de l'originale sinon *)
-(* Display.display crossword *)
+Display.display table_grid
 
