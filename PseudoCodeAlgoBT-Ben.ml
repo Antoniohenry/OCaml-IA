@@ -28,7 +28,7 @@ algo(Grille,words,create_dico(words))  (*on prend une grille initiale, liste de 
   (* Sinon, il y a au moins un terme compatible/ une branche, on fixe le premier terme compatible de la liste dans la grille c'est à dire qu'on prend cette branche *)
   (* on considère qu'on a visité le noeud précédent et donc on enleve le noeud/word de la liste des noeuds/words à visiter *)
 
-  (* On vérifie alors si en partant dans cette branche, on peut atteindre une feuille :
+  (* On vérifie alors si en partant dans cette branche, on peut atteindre une feuille : *)
   (* on applique le meme algorithme en donnant en paramètre la grille avec notre branche choisie dedans et la nouvelle liste des noeuds/words à visiter (réorganisée) *)
   (* Et le dictionnaire associé à cette nouvelle liste de noeuds *)
   
