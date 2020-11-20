@@ -1,7 +1,5 @@
 (*MAIN*)
 
-open Modeler
-open Display
 (* necessite les modules dictionary, generator, modeler, analyser (,display) *)
 
 let () = 
