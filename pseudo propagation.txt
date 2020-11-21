@@ -1,0 +1,18 @@
+pseudo code du module de propagation
+
+init(grille)
+    remplie les domaines
+    met à jour la liste_recherche
+    -> toutes les variables
+
+propagation(grille, variable, mot, liste_recherche)
+
+    met à jour la grille
+
+    reduit les domaines des voisins ie met à jour variables (appels au module dico)
+
+    si un domaine_voisin est vide
+        -> False, grille, variables, liste_recherche
+    si aucun domaine est vide
+        met à jour liste_recherche
+        -> True, grille, variables, liste_recherche
