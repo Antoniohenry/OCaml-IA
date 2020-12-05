@@ -35,6 +35,33 @@ let check_domain_empty = fun variable -> (* on vérifie que le domaine n'est pas
 	Empty -> true (* TODO a modifier suivant le type domaine *)
 	|_ -> false
 
+
+
+(* TODO essayer de rendre plus abstrait le bt donc mettre toutes les fonctions d'accès à des éléments dans un autre fichier comme l'accès à variables ou grille.
+   TODO Rendre nos structures mutables pour accèder et modifier en place  
+   TODO Potentiellement mettre que grille et variables dans status
+   TODO Deplacer des fonctions de check domain empty dans propa
+   
+*)
+
+
+(* TODO Pour modeler on peut faire un tableau de couple de mot croisant avec char croisant ? *)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 (*BT(grille, variables, liste_recherche)
 
     si la taille(liste_recherche) = 0 -> on a une solution

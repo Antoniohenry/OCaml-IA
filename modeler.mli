@@ -7,4 +7,9 @@ type global_status = { grid : grid_type; variables : variable list; rvi : int li
 type remain_var_indexes = int list (* identifiants des variables qu'il reste a instancier, la liste est automatiquement triée par priorité *)
 
 val model_crossword : string -> (int, string)
-val get_table : (int,string) -> grid_type 
+val get_table : (int,string) -> grid_type
+
+
+(* global status : grid pas mutable car strinf ou byte deja mutable, mutable rvi, 
+pas précisé dans le mli mutabilité
+*)
