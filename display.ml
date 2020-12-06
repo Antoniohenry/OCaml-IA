@@ -3,6 +3,8 @@
 (*affiche une fenetre avec la grille d'origine*) 
 
 (* premiere version non graphique *)
+open String
+open Printf
 
 let display = fun crossword ->
         for i = 0 to (Array.length crossword) -1 do             (*parcours des lignes *)
@@ -12,3 +14,5 @@ let display = fun crossword ->
                 done;                                                                                   (*On a crossword un tableau de Char donc conversion en String pour concatener*)
                 Printf.printf "%s\n" !line;             (* affichage ligne *)
         done
+
+
