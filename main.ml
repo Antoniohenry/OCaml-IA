@@ -16,17 +16,18 @@ Generator.generate_crossword nom_grille  (*utile pour plus tard lors de series d
 
 (*Chargement de la grille sauvegardé avec la fct "model_crossword" du module modeler avec param  "fichier.txt" pour la modeliser en tableau pouvant être analysé *)  
 let nom_grille = "exemple.txt" in
-(* let crossword = Modeler.model_crossword nom_grille in *)
-let structure = Modeler.model_crossword nom_grille in
-let table_grid = Modeler.get_table structure in
+Reader.print_words (Reader.get_words_from_txt nom_grille)
+
 
 
 (*Analyse de la grille modelisee precedemment avec la fct "analyse_crossword" du module analyser avec param le tableau grille *)
 (*qui renvoie la meme grille si elle n'est pas valide ou la grille remplie sinon *)
 
+
 (*let crossword = Analyser.analyse_crossword grid *)
 
 
 (*Affichage du succès de la grille remplie si elle est valide ou de l'originale sinon *)
-Display.display table_grid
+
+
 
