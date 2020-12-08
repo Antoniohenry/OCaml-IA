@@ -1,12 +1,19 @@
 type direction = Horizontal | Vertical
+
 type variable = {
   id : int;
-  coord : int * int;
+  coord : int * int; (* ligne * colonne *)
   length : int;
   direction : direction;
+  domain : string list;
   mutable crossing : int list;
 }
-val print_words : variable list -> unit
+
+(* foction d'affichage des variables *)
+val print_vars : variable list -> unit
+
+(* Fonction d'affichage de la grille *)
 val print_grid : string -> unit
 
-val get_words_from_txt : string -> variable list
+(* Extrait les variables du ficher .txt correspondant *)
+val get_vars_from_txt : string -> variable list
