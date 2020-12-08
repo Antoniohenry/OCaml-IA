@@ -30,4 +30,7 @@ let get_table = fun (width, str_grid) ->
 		done
 	done;
     tab_grid
-(* fonction qui annalyse la grille sous forme de tableau et qui sort une structure (grid ?) contenant les mots à trouver et les contraintes entre eux *)
+(* fonction qui annalyse la grille sous forme de tableau et qui sort une structure (grid?) contenant les mots à trouver et les contraintes entre eux *)
+
+(* TODO Mettre les paramètres en interne des fonctions des que possible pour alleger le programme *)
+(* TODO rendre les données mutables *)
