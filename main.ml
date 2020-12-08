@@ -16,7 +16,7 @@ Generator.generate_crossword nom_grille  (*utile pour plus tard lors de series d
 
 (*Chargement de la grille sauvegardé avec la fct "model_crossword" du module modeler avec param  "fichier.txt" pour la modeliser en tableau pouvant être analysé *)  
 let nom_grille = "exemple.txt" in
-Reader.print_words (Reader.get_words_from_txt nom_grille)
+Reader.print_vars (Reader.get_vars_from_txt nom_grille)
 
 
 
