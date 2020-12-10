@@ -2,6 +2,8 @@
 
 (* necessite les modules dictionary, generator, modeler, analyser (,display) *)
 
+open Status
+
 let () = 
 
 (*Creation du dictionnaire de mots tries avec la fonction "generate_dictionary" du module dictionary qui prend en parametre le nom du fichier dico *)
@@ -16,7 +18,12 @@ Generator.generate_crossword nom_grille  (*utile pour plus tard lors de series d
 
 (*Chargement de la grille sauvegardé avec la fct "model_crossword" du module modeler avec param  "fichier.txt" pour la modeliser en tableau pouvant être analysé *)  
 let nom_grille = "exemple.txt" in
-Reader.print_vars (Reader.get_vars_from_txt nom_grille)
+
+let (_, _, grid) = Reader.get_grid "exemple.txt" in
+
+let vars = Reader.get_vars_from_txt nom_grille in
+let state = {grid = grid; vars = vars; queue = []} in
+Printf.printf "%b" (Bt.bt state)
 
 
 

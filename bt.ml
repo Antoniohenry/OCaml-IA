@@ -1,32 +1,39 @@
-let rec bt = fun status -> 
-    if is_rvi_empty status then true  (* rvi = remain_variables_indexes, liste des index des variables a instancier *)
-	else let selected_var_index = choose_var_index (get_rvi status) in (* choix de la variable *)
-		let selected_var = get_var status selected_var_index in (*récupération de la variable *)
-        let rec run_throught = fun domain ->
-            if check_domain_empty domain then false (* vérification de la taille du domaine *)
-            else
-                let status_copy = save status in
-                let (word, remain_domain) = Dico.next domain in
-                let status_copy = save status in (* sauvegarde du statut *)
-                let propa_result = Propagation.propagation status_copy selected_var_index word in (* recuperation de la propagation *)
-                if propa_result then (bt status_copy) (* rappel du BT avec le noueau statut *)
-                    (* TODO plus tard pour tte solution : ici rajouter bt status sur le remain domain pour tester toutes les solutions *)
-                else
-                    status.variables.(selected_var).domain <- remain_domain;
-                    bt status in (* rappel du BT avec l'ancien statut et le nouveau domaine *)
-        run_throught (get_domain selected_var)
-
-
-(*
-
-
 (* sauvegarde le statut *)
 let save = fun status ->
+    let t = Obj.repr status in
+    Obj.obj (Obj.dup t)
+    (*
 	(*let saved_grid = Array.copy status.grid and saved_rvi = Array.copy status.rvi in *)
 	let copy = fun t ->
 	{t with x = t.x} in
 	(*let saved_variables = copy status.variables in *)
-	copy status;;
+	copy status;; *)
+
+let rec bt = fun status ->
+
+    let (continue, var) = Status.select_var status in
+
+    if not continue then false
+    else
+        let rec run_throught = fun domain ->
+            if Dico.is_empty domain then false (* vérification de la taille du domaine *)
+            else
+                let status_copy = save status in
+                let (word, remain_domain) = Dico.next domain in
+                let status_copy = save status in (* sauvegarde du statut *)
+
+                (* TODO Ben ? Tim ? j'ai rajoute status1 pour le typage mais je sais pas quoi en faire... *)
+                let (propa_result, status1) = Propagation.propagation status_copy var word in (* recuperation de la propagation *)
+                if propa_result then (bt status_copy) (* rappel du BT avec le noueau statut *)
+                    (* TODO plus tard pour tte solution : ici rajouter bt status sur le remain domain pour tester toutes les solutions *)
+                else begin
+                    var.domain <- remain_domain;
+                    Status.set_domain status_copy var remain_domain;
+                    bt status end in (* rappel du BT avec l'ancien statut et le nouveau domaine *)
+        run_throught (Status.get_domain var)
+
+
+
 
 
 

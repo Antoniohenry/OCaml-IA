@@ -1,12 +1,14 @@
-let propagation = fun status index word ->
-	status.grid = grid_update status.grid status.variables.(index) word;
-	status.variables = variables_update status.grid status.variables index;
-	let result = ref true in 
-	for id in status.variables.(index).ncl do
-		if (List.length status.variables.(id).domain) = 0 then result := false
-	done
-	if not result then (false, status)
-	else status.rvi = remain_var_update status.rvi status.variables.(index);
-	(true, status);;
+let propagation = fun status var word ->
+	Status.update status word var;
+
+	let rec run_neighbour = fun neighbour ->
+	    match neighbour with
+	    [] -> true
+	    | head :: queue -> if Dico.is_empty (Status.get_domain (Status.get_var status head)) then false else run_neighbour queue
+	    in
+	let result = run_neighbour (Status.get_crossed var) in
+
+	begin if result then Status.update_queue status end;
+	(result, status)
 
 

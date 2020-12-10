@@ -36,7 +36,14 @@ let filter = fun domain car index ->
 
 
 let next = fun domain ->
-    (word, domain)
+    match domain with
+    [] -> raise Not_found
+    | word :: domain -> (word, domain)
 
 
-let is_empty = fun domain -> bool
+let is_empty = fun domain ->
+    List.length domain = 0
+
+
+let length = fun domain ->
+    List.length domain

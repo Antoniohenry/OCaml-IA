@@ -8,12 +8,9 @@ variable : { identifiant :int, coordonnee de la premiere lettre : int*int, longu
  liste_recherche : list of int (identifiant de la variable)
 *)
 (* global_status = grid, variable list et liste_recherche *)
-val bt : global_status-> bool
-val choose_var_index : int list -> int 
-val check_domain_empty : variable -> bool 
-(* val char array -> variable list -> int*int list -> *)
-val domain_update : variable -> string -> variable
-val save : global_status -> global_status 
+val save : 'a -> 'b
+val bt : Status.status -> bool
+
 
  (*BT(grille, variables, liste_recherche)
 

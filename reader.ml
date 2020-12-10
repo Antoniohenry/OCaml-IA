@@ -1,6 +1,10 @@
 (*Transforme une grille rectangulaire sauvegardee en fichier.txt en liste de variables *)
 (*Avec 0 pour case vide, 1 pour case noire et la valeur de la lettre sinon *)
 
+open Status
+
+type variable = Status.variable
+
 (* renvoie la (largeur, la hauteur, grille) du fichier .txt*)
 let get_grid = fun file_name ->
     let file = open_in file_name in (* ouverture du fichier *)
@@ -14,20 +18,20 @@ let get_grid = fun file_name ->
             reader (str_acc ^ line ^ "\n");
         with End_of_file -> close_in file; str_acc; in (* lorsqu'il n'y a plus de ligne à lire on ferme le fichier *)
     let grid = reader (line ^ "\n") in
-    (width, !height, grid)
+    (width, !height, Bytes.of_string grid)
 
 
 (* ajoute une variable a vars *)
-let add = fun vars _coord _length _direction domain constraints ->
-    if _length <= 1 then vars (* permet d'enlever les mots d'une lettre et les mots sans lettre (en fin de ligne) *)
-    else let _id = List.length vars in
+let add = fun vars coord length direction domain constraints ->
+    if length <= 1 then vars (* permet d'enlever les mots d'une lettre et les mots sans lettre (en fin de ligne) *)
+    else let id = List.length vars in
     let rec run_constraints = fun constraints domain ->
         match constraints with
         [] -> domain
         | (letter, index) :: queue -> run_constraints queue (Dico.filter domain letter index)
         in
-    let _domain = run_constraints constraints domain in
-    vars @ [{ id = _id; coord = _coord; length = _length; direction = _direction; domain = _domain; crossing = []}]
+    let domain = run_constraints constraints domain in
+    vars @ [Status.set_var id coord length direction domain]
 
 
 (* transfomre un String en Char list *)
@@ -49,14 +53,14 @@ let get_vars_from_string = fun str _vars direction position dico ->
         match str with
         [] ->
             (* TODO match *)
-            let coord = if direction = Horizontal then (position, index)
+            let coord = if direction = Status.Horizontal then (position, index)
                         else (index, position) in
             vars := add !vars coord length direction dico.(length) constraints
         | head :: queue ->
             begin match head with
             '1' ->
                 (* TODO match *)
-                let coord = if direction = Horizontal then (position, index)
+                let coord = if direction = Status.Horizontal then (position, index)
                             else (index, position) in
                 vars := add !vars coord length direction dico.(length) constraints;
                 run_throught queue 0 constraints
@@ -74,7 +78,7 @@ let get_vars_from_string = fun str _vars direction position dico ->
 let is_crossing = fun word1 word2 ->
     if word1.direction = word2.direction then false
     (* TODO match *)
-    else let (vword, hword) = if word1.direction = Vertical then (word1, word2)
+    else let (vword, hword) = if word1.direction = Status.Vertical then (word1, word2)
                               else (word2, word1) in
 
          let (h_line, hx) = hword.coord and (vy, v_col) = vword.coord in
@@ -108,7 +112,7 @@ let get_vars = fun width height grid dico ->
     let i = ref 0 in
     while !i < height do
         let line = String.sub grid (!i*(width +1)) width in
-        vars := get_vars_from_string line !vars Horizontal !i dico;
+        vars := get_vars_from_string line !vars Status.Horizontal !i dico;
         incr i
         done;
 
@@ -119,7 +123,7 @@ let get_vars = fun width height grid dico ->
         for index = 0 to Bytes.length column -1 do
             Bytes.set column index (String.get grid (!j + index * (width + 1) ) )
             done;
-        vars := get_vars_from_string (Bytes.to_string column) !vars Vertical !j dico;
+        vars := get_vars_from_string (Bytes.to_string column) !vars Status.Vertical !j dico;
         incr j;
         done;
     get_crossed !vars;
@@ -130,5 +134,5 @@ let get_vars = fun width height grid dico ->
 let get_vars_from_txt = fun fic_name ->
     let (width, heigth, grid) = get_grid fic_name in
     let dico = Dico.get_dico "dico_fr.txt" ((max width heigth) +1) in
-    print_grid grid;
-    get_vars width heigth grid dico
+    Status.print_grid (Bytes.to_string grid);
+    get_vars width heigth (Bytes.to_string grid) dico
