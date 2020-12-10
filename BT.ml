@@ -1,34 +1,23 @@
 let rec bt = fun status -> 
-        if is_rvi_empty status then true  (* rvi = remain_variables_indexes, liste des index des variables a instancier *)
+    if is_rvi_empty status then true  (* rvi = remain_variables_indexes, liste des index des variables a instancier *)
 	else let selected_var_index = choose_var_index (get_rvi status) in (* choix de la variable *)
 		let selected_var = get_var status selected_var_index in (*récupération de la variable *)
-		if check_domain_empty selected_var then false (* vérification de la taille du domaine *)
-else let word_list = get_domain selected_var in 
-                for word in word_list do (*TODO iter pour une liste *)
-			let status_copy = save status in (* sauvegarde du statut *)
-			let propa_result = Propagation.propagation status_copy selected_var_index word in (* recuperation de la propagation *)
-			if propa_result then bt status_copy (* rappel du BT avec le noueau statut *)
-			else 
-				domain_update selected_var; (* suppression le premier mot dans le domaine *)
-				bt status; (* rappel du BT avec l'ancien statut et le nouveau domaine *)
-		done
-
-
-
-
-
-
+        let rec run_throught = fun domain ->
+            if check_domain_empty domain then false (* vérification de la taille du domaine *)
+            else
+                let status_copy = save status in
+                let (word, remain_domain) = Dico.next domain in
+                let status_copy = save status in (* sauvegarde du statut *)
+                let propa_result = Propagation.propagation status_copy selected_var_index word in (* recuperation de la propagation *)
+                if propa_result then (bt status_copy) (* rappel du BT avec le noueau statut *)
+                    (* TODO plus tard pour tte solution : ici rajouter bt status sur le remain domain pour tester toutes les solutions *)
+                else
+                    status.variables.(selected_var).domain <- remain_domain;
+                    bt status in (* rappel du BT avec l'ancien statut et le nouveau domaine *)
+        run_throught (get_domain selected_var)
 
 
 (*
-
-
-(* update du domaine en enlevant le mot qui marche pas *)
-let domain_update = fun status word -> (* a refaire dans propagation *)
-	let new_domain = List.tl variable.domain in (*TODO a changer si le domaine est un array*)
-	let variable.domain = new_domain in 
-variable
-*)
 
 
 (* sauvegarde le statut *)
@@ -39,39 +28,13 @@ let save = fun status ->
 	(*let saved_variables = copy status.variables in *)
 	copy status;;
 
-let choose_var_index = fun rvi -> (*on prend la premiere variable de la liste des variables restantes *)
-	get_index_rvi rvi
-
-let check_domain_empty = fun variable -> (* on vérifie que le domaine n'est pas vide *)
-	match variable.domain with
-	Empty -> true (* TODO a modifier suivant le type domaine *)
-	|_ -> false
-
 
 
 (* TODO essayer de rendre plus abstrait le bt donc mettre toutes les fonctions d'accès à des éléments dans un autre fichier comme l'accès à variables ou grille.
    TODO Rendre nos structures mutables pour accèder et modifier en place  
    TODO Potentiellement mettre que grille et variables dans status
-   TODO Deplacer des fonctions de check domain empty dans propa
    
 *)
-
-
-(* TODO Pour modeler on peut faire un tableau de couple de mot croisant avec char croisant ? *)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 (*BT(grille, variables, liste_recherche)

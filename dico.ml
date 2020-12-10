@@ -3,6 +3,9 @@
 (*generate_dictionary dico.txt *) 
 (*fournit un tableau de mot trié selon la taille ou par ordre alphabetique *)
 
+type domain = string list
+
+
 let get_domain = fun file_name length ->
     let file = open_in file_name in (* ouverture du fichier *)
     let rec reader = fun words ->
@@ -30,3 +33,10 @@ let filter = fun domain car index ->
     let is_good = fun word ->
     word.[index] = car in
     List.filter is_good domain
+
+
+let next = fun domain ->
+    (word, domain)
+
+
+let is_empty = fun domain -> bool

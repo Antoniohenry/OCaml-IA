@@ -5,7 +5,7 @@ type variable = {
   coord : int * int; (* ligne * colonne *)
   length : int;
   direction : direction;
-  domain : string list;
+  domain : string list; (* Type domain *)
   mutable crossing : int list;
 }
 

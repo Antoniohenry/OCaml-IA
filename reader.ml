@@ -17,41 +17,6 @@ let get_grid = fun file_name ->
     (width, !height, grid)
 
 
-type direction = Horizontal | Vertical
-
-type variable = {
-    id : int;
-    coord : int*int; (* ligne, colonne *)
-    length : int;
-    direction : direction;
-    domain : string list;
-    mutable crossing : int list }
-
-
-let print_var = fun var ->
-    let (x,y) = var.coord in
-    let dir = if var.direction = Horizontal then "horizontal" else "vertical" in
-
-    (* parcourt la liste d'entier crossed et renvoie la chaine de caractere coreespondante *)
-    let crossed = var.crossing in
-    let rec run_crossed = fun str crossed index ->
-        match crossed with
-        [] -> str
-        | head :: queue ->
-            run_crossed (str ^ (Int.to_string head) ^ ", ") queue (index +1) in
-    let str = run_crossed "" crossed 0 in
-
-    let size = List.length var.domain in
-    Printf.printf "id : %d, long: %d, (%d, %d), %s, doamin size: %d, crossed : %s\n" var.id var.length x y dir size str
-
-
-(* petite fonction d'affichage d'une variable list pour verifier le resultat *)
-let rec print_vars = fun vars ->
-    match vars with
-    [] -> ()
-    | var :: list -> begin print_var var; print_vars list end
-
-
 (* ajoute une variable a vars *)
 let add = fun vars _coord _length _direction domain constraints ->
     if _length <= 1 then vars (* permet d'enlever les mots d'une lettre et les mots sans lettre (en fin de ligne) *)
@@ -83,12 +48,14 @@ let get_vars_from_string = fun str _vars direction position dico ->
         let index = str_length - (List.length str) - length in (* index de la premiere lettre du mot  *)
         match str with
         [] ->
+            (* TODO match *)
             let coord = if direction = Horizontal then (position, index)
                         else (index, position) in
             vars := add !vars coord length direction dico.(length) constraints
         | head :: queue ->
             begin match head with
             '1' ->
+                (* TODO match *)
                 let coord = if direction = Horizontal then (position, index)
                             else (index, position) in
                 vars := add !vars coord length direction dico.(length) constraints;
@@ -106,6 +73,7 @@ let get_vars_from_string = fun str _vars direction position dico ->
 (* renvoie un booleen *)
 let is_crossing = fun word1 word2 ->
     if word1.direction = word2.direction then false
+    (* TODO match *)
     else let (vword, hword) = if word1.direction = Vertical then (word1, word2)
                               else (word2, word1) in
 
@@ -136,6 +104,7 @@ let get_vars = fun width height grid dico ->
 
     let vars = ref [] in
 
+    (* TODO a passer en for *)
     let i = ref 0 in
     while !i < height do
         let line = String.sub grid (!i*(width +1)) width in
@@ -143,6 +112,7 @@ let get_vars = fun width height grid dico ->
         incr i
         done;
 
+    (* TODO a passer en for *)
     let j = ref 0 in
     while !j < width do
         let column = Bytes.create height in
@@ -156,22 +126,9 @@ let get_vars = fun width height grid dico ->
     !vars
 
 
-(* fonction d'affichage de la grille *)
-let print_grid = fun grid ->
-    Printf.printf "%s" grid
-
-
 (* transforme une grille rectangulaire sauvegardee en fichier.txt en liste de variables *)
 let get_vars_from_txt = fun fic_name ->
     let (width, heigth, grid) = get_grid fic_name in
     let dico = Dico.get_dico "dico_fr.txt" ((max width heigth) +1) in
     print_grid grid;
     get_vars width heigth grid dico
-
-(*
-let fill_grid = fun grid str id variables ->
-    let is_good = fun id var ->
-        var.id = id in
-    let var = List.find (is_good id) variables in
-    print_var var;
-*)
