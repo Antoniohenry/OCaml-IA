@@ -68,11 +68,11 @@
 #
 # The Caml sources (including camlyacc and camllex source files)
 
-SOURCES = modeler.ml display.ml main.ml
+SOURCES = dico.ml status.ml reader.ml propagation.ml bt.ml main.ml
 
 # The executable file to generate (default a.out under Unix)
 
-EXEC = a.out
+EXEC = main
 
 
 ########################## Advanced user's variables #####################
@@ -96,7 +96,7 @@ LIBS=
 # or if any C code have to be linked with your program
 # (irrelevant for ocamlopt)
 
-CUSTOM=-custom
+CUSTOM=
 
 # Default setting of the WITH* variables. Should be changed if your
 # local libraries are not found by the compiler.

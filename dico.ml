@@ -11,7 +11,7 @@ let get_domain = fun file_name length ->
     let rec reader = fun words ->
         try
             let word = input_line file in
-            if (String.contains word ' ') || String.length word != length  then reader words else reader words @ [word]
+            if (String.contains word ' ') || String.length word != length  then reader words else reader (words @ [word])
         with End_of_file -> close_in file; words (* lorsqu'il n'y a plus de ligne à lire on ferme le fichier *)
     in
     reader []
@@ -29,9 +29,13 @@ let get_dico = fun file_name max_length ->
     Array.init max_length (get_domain file_name)
 
 
+(* TODO trouver un moyen de modifier un domain en place !! *)
 let filter = fun domain car index ->
+    Printf.printf "appel de filter de Dico avec lettre : %c, index : %d \n" car index;
+
     let is_good = fun word ->
     word.[index] = car in
+
     List.filter is_good domain
 
 

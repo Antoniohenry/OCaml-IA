@@ -11,19 +11,22 @@ let save = fun status ->
 
 let rec bt = fun status ->
 
+    (* Pour le debug *)
+    Status.print_grid status;
+
     let (continue, var) = Status.select_var status in
+
+
 
     if not continue then false
     else
         let rec run_throught = fun domain ->
             if Dico.is_empty domain then false (* vérification de la taille du domaine *)
             else
-                let status_copy = save status in
                 let (word, remain_domain) = Dico.next domain in
                 let status_copy = save status in (* sauvegarde du statut *)
 
-                (* TODO Ben ? Tim ? j'ai rajoute status1 pour le typage mais je sais pas quoi en faire... *)
-                let (propa_result, status1) = Propagation.propagation status_copy var word in (* recuperation de la propagation *)
+                let (propa_result, status_copy) = Propagation.propagation status_copy var word in (* recuperation de la propagation *)
                 if propa_result then (bt status_copy) (* rappel du BT avec le noueau statut *)
                     (* TODO plus tard pour tte solution : ici rajouter bt status sur le remain domain pour tester toutes les solutions *)
                 else begin

@@ -27,10 +27,10 @@ let add = fun vars coord length direction domain constraints ->
     else let id = List.length vars in
     let rec run_constraints = fun constraints domain ->
         match constraints with
-        [] -> domain
+        [] -> ()
         | (letter, index) :: queue -> run_constraints queue (Dico.filter domain letter index)
         in
-    let domain = run_constraints constraints domain in
+    run_constraints constraints domain;
     vars @ [Status.set_var id coord length direction domain]
 
 
@@ -134,5 +134,4 @@ let get_vars = fun width height grid dico ->
 let get_vars_from_txt = fun fic_name ->
     let (width, heigth, grid) = get_grid fic_name in
     let dico = Dico.get_dico "dico_fr.txt" ((max width heigth) +1) in
-    Status.print_grid (Bytes.to_string grid);
     get_vars width heigth (Bytes.to_string grid) dico

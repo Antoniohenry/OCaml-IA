@@ -11,7 +11,7 @@ type variable = {
 }
 type status = { grid : grid; mutable vars : variable list; mutable queue : int list; }
 val update : status -> string -> variable -> unit
-val print_grid : string -> unit
+val print_grid : status -> unit
 val print_var : variable -> unit
 val print_vars : variable list -> unit
 val get_domain : variable -> domain
