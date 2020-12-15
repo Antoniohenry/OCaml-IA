@@ -23,7 +23,7 @@ let (_, _, grid) = Reader.get_grid "exemple.txt" in
 
 let vars = Reader.get_vars_from_txt nom_grille in
 let state = {grid = grid; vars = vars; queue = []} in
-Printf.printf "%b" (Bt.bt state)
+Printf.printf "%b \n" (Bt.bt state)
 
 
 

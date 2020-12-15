@@ -27,11 +27,11 @@ let add = fun vars coord length direction domain constraints ->
     else let id = List.length vars in
     let rec run_constraints = fun constraints domain ->
         match constraints with
-        [] -> ()
+        [] -> domain
         | (letter, index) :: queue -> run_constraints queue (Dico.filter domain letter index)
         in
-    run_constraints constraints domain;
-    vars @ [Status.set_var id coord length direction domain]
+    let _domain = run_constraints constraints domain in
+    vars @ [Status.set_var id coord length direction _domain]
 
 
 (* transfomre un String en Char list *)

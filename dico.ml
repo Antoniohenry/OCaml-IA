@@ -29,13 +29,9 @@ let get_dico = fun file_name max_length ->
     Array.init max_length (get_domain file_name)
 
 
-(* TODO trouver un moyen de modifier un domain en place !! *)
 let filter = fun domain car index ->
-    Printf.printf "appel de filter de Dico avec lettre : %c, index : %d \n" car index;
-
     let is_good = fun word ->
     word.[index] = car in
-
     List.filter is_good domain
 
 

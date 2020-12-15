@@ -41,60 +41,57 @@ let get_var = fun status id ->
 
 
 let filter = fun var car index ->
-    Printf.printf "appel de filter du status avec : \n";
-    print_var var;
-    Printf.printf "lettre : %c, index : %d \n \n \n" car index;
     var.domain <- Dico.filter var.domain car index
 
 
-let update = fun status str var ->
-    Printf.printf "mot à placer : %s \n" str;
-    print_var var;
-
-    let id = var.id in
-    let is_good = fun id var ->
-        var.id = id in
-    let var = List.find (is_good id) status.vars in
-    var.domain <- [str];
-
-    let length = Bytes.index status.grid '\n' in
-
+let update_grid = fun grid var str ->
+    let length = Bytes.index grid '\n' in
     let (line, col) = var.coord in
     match var.direction with
     (* length +1 pour passer le \n à la fin de chaque ligne *)
     Horizontal -> for index = 0 to var.length -1 do
-        Bytes.set status.grid (line * (length +1)+ col + index) str.[index] done
+        Bytes.set grid (line * (length +1)+ col + index) str.[index] done
     | Vertical -> for index = 0 to var.length -1 do
-        Bytes.set status.grid  ((line + index) * (length +1) + col) str.[index] done;
+        Bytes.set grid  ((line + index) * (length +1) + col) str.[index] done
 
-    (* vide les domaines des mots croises *)
+
+let update_crossing_domain = fun status var str ->
+    let (line, col) = var.coord in
+
     let rec run = fun crossing ->
         match crossing with
-        [] -> Printf.printf "match []"; ()
+        [] -> ()
         | id :: queue ->
-            Printf.printf "id : %d \n" id;
+            begin
             let var_crossed = get_var status id in
-
+            Printf.printf "update domain : "; print_var var_crossed;
             let (l, c) = var_crossed.coord in
-
-            match var.direction with
+            begin match var.direction with
             Vertical ->
                 let var_crossed_index = col - c in
-                let letter = str.[line - l] in
-                Printf.printf " lttre %c \n" letter;
+                let letter = str.[l - line] in
                 filter var_crossed letter var_crossed_index;
-                Printf.printf "fin du filter \n";
                 run queue
 
             | Horizontal ->
                 let var_crossed_index = line - l in
-                let letter = str.[col - c] in
+                let letter = str.[c - col] in
                 filter var_crossed letter var_crossed_index;
                 run queue
-
-
-    in
+            end
+        end
+        in
     run var.crossing
+
+
+let update = fun status str var ->
+    Printf.printf "set current variable : "; print_var var; Printf.printf "with : %s\n" str;
+    var.domain <- [str];
+
+    update_grid status.grid var str;
+
+    (* vide les domaines des mots croises *)
+    update_crossing_domain status var str
 
 
 (* fonction d'affichage de la grille *)
@@ -134,13 +131,11 @@ let is_queue_empty = fun status ->
 
 let select_var = fun status ->
     begin if is_queue_empty status then update_queue status end; (* Pour regler un pb au premier appel *)
+    Printf.printf "length queue : %d\n" (List.length status.queue);
     let id = List.hd status.queue in
     let var = List.find (fun var -> var.id = id) status.vars in
     let length = Dico.length (get_domain var) in
     if length = 0 then (false, var) else (true, var)
-
-
-
 
 
 let get_neighbour = fun status id ->
