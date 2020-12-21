@@ -7,9 +7,9 @@ type variable = {
   length : int;
   direction : direction;
   mutable domain : domain;
-  mutable crossing : int list;
+  mutable crossing : int list
 }
-type status = { grid : grid; mutable vars : variable list; mutable queue : int list; }
+type status = { grid : grid; mutable vars : variable list; mutable queue : int list }
 val update : status -> string -> variable -> unit
 val print_grid : status -> unit
 val print_var : variable -> unit
@@ -25,3 +25,4 @@ val get_element : status -> int
 val set_domain : status -> variable -> domain -> unit
 val get_crossed : variable -> int list
 val set_var : int -> int * int -> int -> direction -> domain -> variable
+val copy : status -> status

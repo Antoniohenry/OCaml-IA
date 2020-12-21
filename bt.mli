@@ -8,7 +8,7 @@ variable : { identifiant :int, coordonnee de la premiere lettre : int*int, longu
  liste_recherche : list of int (identifiant de la variable)
 *)
 (* global_status = grid, variable list et liste_recherche *)
-val save : 'a -> 'b
+val save : Status.status -> Status.status
 val bt : Status.status -> bool
 
 

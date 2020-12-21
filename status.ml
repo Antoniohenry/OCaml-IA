@@ -13,6 +13,15 @@ type variable = {
     mutable crossing : int list }
 
 
+let list_copy = fun list ->
+        let rec iter = fun list new_list ->
+                match list with 
+                        [] -> new_list
+                        | hd :: tl -> let element = hd in 
+                iter tl ([element] @ new_list )
+        in
+        iter list []
+
 (* affichage d'une variable *)
 let print_var = fun var ->
     let (x,y) = var.coord in
@@ -157,5 +166,21 @@ let get_crossed = fun var ->
 let set_var = fun id coord length direction domain ->
     { id = id; coord = coord; length = length; direction = direction; domain = domain; crossing = []}
 
+let copy_queue = fun queue -> list_copy queue
+
+let copy_vars = fun variables ->
+        let rec iter = fun vars new_vars ->
+                match vars with 
+                        [] -> new_vars
+                        | hd::tl -> let var = {id = hd.id ; coord = hd.coord ; length = hd.length ; direction = hd.direction ; domain = (list_copy hd.domain) ; crossing = (list_copy hd.crossing) } in
+               iter tl ([var] @ new_vars)
+        in
+        iter variables []
+
+let copy = fun status -> 
+        let grid = Bytes.copy status.grid in
+        let vars = copy_vars status.vars in
+        let queue = copy_queue status.queue in
+        {grid = grid; vars = vars; queue =  queue }
 
 

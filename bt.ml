@@ -1,17 +1,7 @@
 (* sauvegarde le statut *)
 let save = fun status ->
-    (*Oo.copy status*)
+        Status.copy status
 
-
-    let t = Obj.repr status in
-    Obj.obj (Obj.dup t)
-
-    (*
-	(*let saved_grid = Array.copy status.grid and saved_rvi = Array.copy status.rvi in *)
-	let copy = fun t ->
-	{t with x = t.x} in
-	(*let saved_variables = copy status.variables in *)
-	copy status;; *)
 
 let rec bt = fun status ->
 
