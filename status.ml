@@ -18,7 +18,7 @@ let list_copy = fun list ->
                 match list with 
                         [] -> new_list
                         | hd :: tl -> let element = hd in 
-                iter tl ([element] @ new_list )
+                        iter tl ( new_list @ [element])
         in
         iter list []
 
@@ -173,7 +173,7 @@ let copy_vars = fun variables ->
                 match vars with 
                         [] -> new_vars
                         | hd::tl -> let var = {id = hd.id ; coord = hd.coord ; length = hd.length ; direction = hd.direction ; domain = (list_copy hd.domain) ; crossing = (list_copy hd.crossing) } in
-               iter tl ([var] @ new_vars)
+                iter tl (new_vars @ [var])
         in
         iter variables []
 
@@ -183,4 +183,10 @@ let copy = fun status ->
         let queue = copy_queue status.queue in
         {grid = grid; vars = vars; queue =  queue }
 
-
+let print_queue = fun queue ->
+        let rec iter = fun str queue ->
+                match queue with 
+                [] -> str
+                | hd::tl -> iter (str ^ (Int.to_string hd) ^ " ") tl
+        in
+        Printf.printf "%s" (iter "" queue)

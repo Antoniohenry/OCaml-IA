@@ -5,27 +5,38 @@ let save = fun status ->
 
 let rec bt = fun status ->
 
-    let status_copy = save status in (* sauvegarde du statut *)
-    Printf.printf "grille copiée : \n"; Status.print_grid status_copy;
+    let status_saved = save status in (* sauvegarde du statut *)
+    (*Printf.printf "grille sauvegardée: \n"; Status.print_grid status_saved; *)
 
-    let (continue, var) = Status.select_var status_copy in
+    let (continue, var) = Status.select_var status in
 
     if not continue then begin Printf.printf "queue vide  \n"; false end
-    else
-        let rec run_throught = fun domain ->
+else begin
+        Status.print_queue status.queue;
+        let rec run_throught = fun domain -> (* TODO recursion sert a rien car appel bt recursif *)
             if Dico.is_empty domain then begin Printf.printf "domaine vide \n"; false end (* vérification de la taille du domaine *)
-            else
+                else begin 
+                Printf.printf "longueur domaine : %d \n"  (List.length domain);
                 let (word, remain_domain) = Dico.next domain in
-
-                let (propa_result, status_copy) = Propagation.propagation status_copy var word in (* recuperation de la propagation *)
-                if propa_result then (bt status_copy) (* rappel du BT avec le noueau statut *)
-                    (* TODO plus tard pour tte solution : ici rajouter bt status sur le remain domain pour tester toutes les solutions *)
+                Printf.printf "longueur remain domain : %d \n" (List.length remain_domain);
+                let (propa_result, status) = Propagation.propagation status  var word in 
+                 (*Printf.printf "grille copiée après propagation : \n"; Status.print_grid status; *)
+                (* recuperation de la propagation *)
+                if propa_result then begin 
+                        Printf.printf "grille après propagation réussie : \n"; Status.print_grid status; 
+                        (bt status) end (* rappel du BT avec le noueau statut *)
+                        (* TODO plus tard pour tte solution : ici rajouter bt status sur le remain domain pour tester toutes les solutions *)
+                        
                 else begin
-                    var.domain <- remain_domain;
-                    Status.set_domain status_copy var remain_domain;
-                    Printf.printf "ancienne grille : \n"; Status.print_grid status;
-                    bt status end in (* rappel du BT avec l'ancien statut et le nouveau domaine *)
+                    (*var.domain <- remain_domain;*)
+                    Status.set_domain status_saved var remain_domain;
+                    Printf.printf "grille après propagation echouée: \n"; Status.print_grid status_saved;
+                    bt status_saved 
+                    end
+                end 
+         in(* rappel du BT avec l'ancien statut et le nouveau domaine *)
         run_throught (Status.get_domain var)
+        end
 
 
 
