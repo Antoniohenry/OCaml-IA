@@ -40,8 +40,6 @@ let print_var = fun var ->
     Printf.printf "id : %d, long: %d, (%d, %d), %s, domain size: %d, crossed : %s\n" var.id var.length x y dir size str
 
 
-
-
 type status = {grid : grid; mutable vars : variable list; mutable queue : int list}
 
 
@@ -92,7 +90,19 @@ let update_crossing_domain = fun status var str ->
         in
     run var.crossing
 
+
 (* TODO update_crossing qui vide les listes des voisins de chaque var *)
+let update_crossing = fun status var ->
+    let rec run = fun neighbours_id ->
+        match neighbours_id with
+        [] -> ()
+        | id :: tl ->
+                (get_var status id).crossing <- List.filter (fun id -> (id != var.id)) (get_var status id).crossing;
+                run tl
+        in
+    run var.crossing
+
+
 
 let update = fun status str var ->
     Printf.printf "set current variable : "; print_var var; Printf.printf "with : %s\n" str;
@@ -101,13 +111,14 @@ let update = fun status str var ->
     update_grid status.grid var str;
 
     (* vide les domaines des mots croises *)
-    update_crossing_domain status var str
+    update_crossing_domain status var str;
+
+    update_crossing status var
 
 
 (* fonction d'affichage de la grille *)
 let print_grid = fun status ->
     Printf.printf "%s \n" (Bytes.to_string status.grid)
-
 
 
 (* petite fonction d'affichage d'une variable list pour verifier le resultat *)
@@ -124,7 +135,7 @@ let get_domain = fun var ->
 let update_queue = fun status ->
 
     (* permet d'enlever les variables déjà instanciées (notamment celle qu'on vient juste d'intancier lors de la propa) *)
-let vars = List.filter (fun var -> (List.length var.domain > 1))  status.vars in 
+    let vars = List.filter (fun var -> (List.length var.domain > 1))  status.vars in
 
     let comp = fun var1 var2 ->
         compare (Dico.length (get_domain var1)) (Dico.length (get_domain var2))
@@ -142,12 +153,14 @@ let reduce_queue = fun status index ->
         in
         status.queue <- (inter status.queue )
 
+
 let get_queue = fun status ->
     status.queue
 
 
 let is_queue_empty = fun status ->
     List.length (get_queue status) = 0
+
 
 let select_var = fun status ->
     begin if is_queue_empty status then update_queue status end; (* Pour regler un pb au premier appel *)
@@ -162,11 +175,9 @@ let get_neighbour = fun status id ->
     let var = get_var status id in
     var.crossing
 
-
 (* 1er element de la file *)
 let get_element = fun status ->
     List.hd status.queue
-
 
 let set_domain = fun status var domain ->
     (List.nth status.vars var.id).domain <- domain

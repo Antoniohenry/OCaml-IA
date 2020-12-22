@@ -10,30 +10,30 @@ let rec bt = fun status ->
 
     let (continue, var) = Status.select_var status in
 
-    if not continue then begin Printf.printf "queue vide  \n"; false end
-else begin
+    if not continue then begin Printf.printf "domaine vide  \n"; false end
+    else begin
         Status.print_queue status.queue;
         let rec run_throught = fun domain -> (* TODO recursion sert a rien car appel bt recursif *)
             if Dico.is_empty domain then begin Printf.printf "domaine vide \n"; false end (* vérification de la taille du domaine *)
-                else begin 
+                else begin
                 Printf.printf "longueur domaine : %d \n"  (List.length domain);
                 let (word, remain_domain) = Dico.next domain in
                 Printf.printf "longueur remain domain : %d \n" (List.length remain_domain);
-                let (propa_result, status) = Propagation.propagation status  var word in 
+                let (propa_result, status) = Propagation.propagation status  var word in
                  (*Printf.printf "grille copiée après propagation : \n"; Status.print_grid status; *)
                 (* recuperation de la propagation *)
-                if propa_result then begin 
-                        Printf.printf "grille après propagation réussie : \n"; Status.print_grid status; 
+                if propa_result then begin
+                        Printf.printf "grille après propagation réussie : \n"; Status.print_grid status;
                         (bt status) end (* rappel du BT avec le noueau statut *)
                         (* TODO plus tard pour tte solution : ici rajouter bt status sur le remain domain pour tester toutes les solutions *)
-                        
+
                 else begin
                     (*var.domain <- remain_domain;*)
                     Status.set_domain status_saved var remain_domain;
                     Printf.printf "grille après propagation echouée: \n"; Status.print_grid status_saved;
-                    bt status_saved 
+                    bt status_saved
                     end
-                end 
+                end
          in(* rappel du BT avec l'ancien statut et le nouveau domaine *)
         run_throught (Status.get_domain var)
         end

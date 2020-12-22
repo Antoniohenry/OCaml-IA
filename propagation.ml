@@ -9,7 +9,7 @@ let rec propagation = fun status var word ->
                    if Dico.is_empty domain then false 
                         else
                                 if (List.length domain = 1) then begin
-                                        Status.reduce_queue status head;
+                                        (*Status.reduce_queue status head;*)
                                         let (result_intern, status) = propagation status (Status.get_var status head) (List.nth domain 0) in 
                                         if result_intern then
                                                 run_neighbour tail
