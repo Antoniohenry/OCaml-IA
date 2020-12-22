@@ -73,7 +73,7 @@ let update_crossing_domain = fun status var str ->
         | id :: queue ->
             begin
             let var_crossed = get_var status id in
-            Printf.printf "update domain : "; print_var var_crossed;
+            (*Printf.printf "update domain : "; print_var var_crossed;*)
             let (l, c) = var_crossed.coord in
             begin match var.direction with
             Vertical ->
@@ -92,6 +92,7 @@ let update_crossing_domain = fun status var str ->
         in
     run var.crossing
 
+(* TODO update_crossing qui vide les listes des voisins de chaque var *)
 
 let update = fun status str var ->
     Printf.printf "set current variable : "; print_var var; Printf.printf "with : %s\n" str;
@@ -123,13 +124,23 @@ let get_domain = fun var ->
 let update_queue = fun status ->
 
     (* permet d'enlever les variables déjà instanciées (notamment celle qu'on vient juste d'intancier lors de la propa) *)
-    let vars = List.filter (fun var -> (List.length var.domain) > 1) status.vars in
+let vars = List.filter (fun var -> (List.length var.domain > 1))  status.vars in 
 
     let comp = fun var1 var2 ->
         compare (Dico.length (get_domain var1)) (Dico.length (get_domain var2))
         in
     let sorted = List.sort comp vars in
     status.queue <- List.map (fun var -> var.id) sorted
+
+
+
+let reduce_queue = fun status index ->
+        let rec inter = fun list -> 
+                match list with 
+                        []-> list
+                        | hd::tl -> if (hd = index) then tl else ( [hd] @ (inter tl))
+        in
+        status.queue <- (inter status.queue )
 
 let get_queue = fun status ->
     status.queue

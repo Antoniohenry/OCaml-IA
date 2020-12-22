@@ -26,4 +26,6 @@ val set_domain : status -> variable -> domain -> unit
 val get_crossed : variable -> int list
 val set_var : int -> int * int -> int -> direction -> domain -> variable
 val copy : status -> status
+val copy_queue : int list -> int list
 val print_queue : int list -> unit
+val reduce_queue : status -> int -> unit
