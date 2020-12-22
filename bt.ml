@@ -8,8 +8,29 @@ let rec bt = fun status ->
     let status_saved = save status in (* sauvegarde du statut *)
     (*Printf.printf "grille sauvegardée: \n"; Status.print_grid status_saved; *)
 
-    let (continue, var) = Status.select_var status in
+    if Status.is_queue_empty status then begin (Status.print_grid status); failwith "Solution" end
+    else
+    let (_, var) = Status.select_var status in
+    Printf.printf "variable selectionnée : "; Status.print_var var;
 
+    let rec run = fun status domain ->
+        match domain with
+        [] ->  Status.print_vars status_saved.vars; bt status
+        | word :: remain_domain ->
+                Printf.printf "mot à placer %s \n" word;
+                let (propa_result, status_apres_propa) = Propagation.propagation status var word in
+                if propa_result then begin
+                        Printf.printf "grille après propagation réussie : \n";
+                        Status.print_vars status_apres_propa.vars;
+                        Status.print_grid status_apres_propa; bt status_apres_propa end
+                else begin
+                        Printf.printf "propa echouée \n";
+                        Status.print_vars status_apres_propa.vars;
+                        run status_apres_propa remain_domain end
+        in
+    run status var.domain
+
+ (*
     if not continue then begin Printf.printf "domaine vide  \n"; false end
     else begin
         Status.print_queue status.queue;
@@ -39,7 +60,7 @@ let rec bt = fun status ->
         end
 
 
-
+*)
 
 
 

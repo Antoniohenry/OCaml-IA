@@ -14,6 +14,12 @@ type variable = {
 
 
 let list_copy = fun list ->
+
+    let array = Array.of_list list in
+    let new_array = Array.copy array in
+    Array.to_list new_array
+
+(*
         let rec iter = fun list new_list ->
                 match list with 
                         [] -> new_list
@@ -21,6 +27,8 @@ let list_copy = fun list ->
                         iter tl ( new_list @ [element])
         in
         iter list []
+*)
+
 
 (* affichage d'une variable *)
 let print_var = fun var ->
@@ -105,7 +113,7 @@ let update_crossing = fun status var ->
 
 
 let update = fun status str var ->
-    Printf.printf "set current variable : "; print_var var; Printf.printf "with : %s\n" str;
+    (*Printf.printf "set current variable : "; print_var var; Printf.printf "with : %s\n" str;*)
     var.domain <- [str];
 
     update_grid status.grid var str;
@@ -162,9 +170,19 @@ let is_queue_empty = fun status ->
     List.length (get_queue status) = 0
 
 
+let print_queue = fun queue ->
+        let rec iter = fun str queue ->
+                match queue with
+                [] -> str
+                | hd::tl -> iter (str ^ (Int.to_string hd) ^ " ") tl
+        in
+        Printf.printf "%s" (iter "" queue)
+
+
 let select_var = fun status ->
     begin if is_queue_empty status then update_queue status end; (* Pour regler un pb au premier appel *)
-    Printf.printf "length queue : %d\n" (List.length status.queue);
+    (*Printf.printf "length queue : %d\n" (List.length status.queue);*)
+    Printf.printf "queue : "; print_queue status.queue;
     let id = List.hd status.queue in
     let var = List.find (fun var -> var.id = id) status.vars in
     let length = Dico.length (get_domain var) in
@@ -190,11 +208,14 @@ let set_var = fun id coord length direction domain ->
 
 let copy_queue = fun queue -> list_copy queue
 
+let copy_var = fun var ->
+    {id = var.id ; coord = var.coord ; length = var.length ; direction = var.direction ; domain = (list_copy var.domain) ; crossing = (list_copy var.crossing) }
+
 let copy_vars = fun variables ->
         let rec iter = fun vars new_vars ->
                 match vars with 
                         [] -> new_vars
-                        | hd::tl -> let var = {id = hd.id ; coord = hd.coord ; length = hd.length ; direction = hd.direction ; domain = (list_copy hd.domain) ; crossing = (list_copy hd.crossing) } in
+                        | hd::tl -> let var = copy_var hd in
                 iter tl (new_vars @ [var])
         in
         iter variables []
@@ -205,10 +226,8 @@ let copy = fun status ->
         let queue = copy_queue status.queue in
         {grid = grid; vars = vars; queue =  queue }
 
-let print_queue = fun queue ->
-        let rec iter = fun str queue ->
-                match queue with 
-                [] -> str
-                | hd::tl -> iter (str ^ (Int.to_string hd) ^ " ") tl
-        in
-        Printf.printf "%s" (iter "" queue)
+
+let delete = fun status var word ->
+    var.domain <- List.filter (fun w -> not (String.equal w word)) var.domain;
+    status.vars <- List.filter (fun variable -> variable.id != var.id) status.vars;
+    status.vars <- status.vars @ [var]

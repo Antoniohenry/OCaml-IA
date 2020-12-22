@@ -1,4 +1,8 @@
 let rec propagation = fun status var word ->
+
+    let saved_status = Status.copy status in
+
+
 	Status.update status word var;
 
         let rec run_neighbour = fun neighbour ->
@@ -20,7 +24,11 @@ let rec propagation = fun status var word ->
         in
 	let result = run_neighbour (Status.get_crossed var) in
 
-	begin if result then Status.update_queue status end;
-	(result, status)
+	if result then begin Status.update_queue status; (result, status) end
+	else begin
+	(* Le delete doit se faire sur une copie de la var *)
+	Status.delete saved_status var word; (result, saved_status)
+	end
+
 
 

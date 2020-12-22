@@ -29,3 +29,5 @@ val copy : status -> status
 val copy_queue : int list -> int list
 val print_queue : int list -> unit
 val reduce_queue : status -> int -> unit
+val copy_var : variable -> variable
+val delete : status -> variable -> string -> unit
