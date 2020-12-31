@@ -5,8 +5,8 @@
 
 type domain = string list
 
-
-let get_domain = fun file_name length ->
+(* TODO on ouvre et ferme plusieurs fois le fichier inutilement *)
+let get_domain = fun file_name length -> (* length : longeur de la variable *)
     let file = open_in file_name in (* ouverture du fichier *)
     let rec reader = fun words ->
         try
@@ -25,7 +25,7 @@ let print = fun domain ->
     Printf.printf "%s" (run_througth domain "")
 
 
-let get_dico = fun file_name max_length ->
+let get_dico = fun file_name max_length -> (* max_length : taille maximale de la grille *)
     Array.init max_length (get_domain file_name)
 
 

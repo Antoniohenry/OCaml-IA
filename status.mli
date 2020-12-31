@@ -31,3 +31,4 @@ val print_queue : int list -> unit
 val reduce_queue : status -> int -> unit
 val copy_var : variable -> variable
 val delete : status -> variable -> string -> unit
+val get_id : variable -> int

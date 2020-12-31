@@ -9,6 +9,7 @@ type variable = {
     coord : int*int; (* ligne, colonne *)
     length : int;
     direction : direction;
+        (* string = type False | True of String *)
     mutable domain : domain;
     mutable crossing : int list }
 
@@ -48,7 +49,7 @@ let print_var = fun var ->
     Printf.printf "id : %d, long: %d, (%d, %d), %s, domain size: %d, crossed : %s\n" var.id var.length x y dir size str
 
 
-type status = {grid : grid; mutable vars : variable list; mutable queue : int list}
+type status = {grid : grid; mutable vars : variable list; mutable queue : int list (* mutable : int list *)}
 
 
 let get_var = fun status id ->
@@ -231,3 +232,7 @@ let delete = fun status var word ->
     var.domain <- List.filter (fun w -> not (String.equal w word)) var.domain;
     status.vars <- List.filter (fun variable -> variable.id != var.id) status.vars;
     status.vars <- status.vars @ [var]
+
+
+let get_id = fun var ->
+    var.id
