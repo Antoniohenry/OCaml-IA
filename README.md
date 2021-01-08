@@ -9,3 +9,6 @@ Les donnees sont des fichiers texte representant une grille rectangulaire avec 0
 10t \
 010 
 
+## Documentation
+ocamldoc -html -d doc dico.mli status.mli reader.mli propagation.mli bt.mli main.ml
+
