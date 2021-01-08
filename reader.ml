@@ -3,6 +3,7 @@
 
 open Status
 
+type status = Status.status
 type variable = Status.variable
 
 (* renvoie la (largeur, la hauteur, grille) du fichier .txt*)
@@ -105,7 +106,6 @@ let rec get_crossed = fun vars ->
 
 (* parcourt les lignes et colonnes de grid et renvoie une varriable list *)
 let get_vars = fun width height grid dico ->
-
     let vars = ref [] in
 
     (* TODO a passer en for *)
@@ -131,7 +131,10 @@ let get_vars = fun width height grid dico ->
 
 
 (* transforme une grille rectangulaire sauvegardee en fichier.txt en liste de variables *)
-let get_vars_from_txt = fun fic_name ->
+let read = fun fic_name dico_name ->
     let (width, heigth, grid) = get_grid fic_name in
-    let dico = Dico.get_dico "dico_fr.txt" ((max width heigth) +1) in
-    get_vars width heigth (Bytes.to_string grid) dico
+    let dico = Dico.get_dico dico_name ((max width heigth) +1) in
+    let vars = get_vars width heigth (Bytes.to_string grid) dico in
+    let status = {grid = grid; vars = vars; queue = []} in
+    Status.update_queue status;
+    status
