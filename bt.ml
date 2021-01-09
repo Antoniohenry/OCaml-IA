@@ -33,14 +33,13 @@ let rec bt = fun status ->
 
                     (* Dans tous les cas on evalue 'bt status_apres_propa' ie on plonge dans l'arbre *)
                     (* si true alors c'est qu'apres avoir plongé dans l'arbre on veut backtracker sur ce noeud -> il suffit d'abandonner le mot fixé précedement pour passer au mot suivant *)
-                    if bt status_apres_propa then run status_saved remain_domain end (* c'est cette ligne qui gere la pile des appels recursifs *)
+                    if bt status_apres_propa then begin Status.delete status_saved var word; run status_saved remain_domain end end (* c'est cette ligne qui gere la pile des appels recursifs *)
                 else begin
                     Printf.printf "propa echouée \n";
-                    Status.delete status_apres_propa var word;
                     run status_apres_propa remain_domain end
             in
         try
-        run status var.domain; false (* Si on arrive à ce false alors la grille n'a pas de solution (TODO à vérifier!!) *)
+        run status var.domain; false (* On arrive jamais ici maisil faut lever un booleen pour la compilation *)
 
         (* Si on parcourt tout le domain sans propagation reussie alors il faut backtracker ie bt doit renvoyer true *)
         with Back bl -> bl
