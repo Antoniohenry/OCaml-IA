@@ -9,6 +9,21 @@ Les donnees sont des fichiers texte representant une grille rectangulaire avec 0
 10t \
 010 
 
+## Affichage des étapes
+Décommenter les lignes suivantes pour obtenir l'affichage des étapes correspondantes :
+
+Propagation : 
+-L10 = actualisation grille
+-L18 = afficher var fixées implicitement
+
+BT :
+-L19 = file d'attente des vars à traiter 
+-L20 = var selectionnée
+-L30 = mot à placer
+-L33 = propagation réussie 
+-L39 = propagation échouée
+
+
 ## Documentation
 ocamldoc -html -d doc dico.mli status.mli reader.mli propagation.mli bt.mli main.ml
 
