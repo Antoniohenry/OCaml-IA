@@ -53,14 +53,12 @@ let get_vars_from_string = fun str _vars direction position dico ->
         let index = str_length - (List.length str) - length in (* index de la premiere lettre du mot  *)
         match str with
         [] ->
-            (* TODO match *)
             let coord = if direction = Status.Horizontal then (position, index)
                         else (index, position) in
             vars := add !vars coord length direction dico.(length) constraints
         | head :: queue ->
             begin match head with
             '1' ->
-                (* TODO match *)
                 let coord = if direction = Status.Horizontal then (position, index)
                             else (index, position) in
                 vars := add !vars coord length direction dico.(length) constraints;
@@ -78,7 +76,6 @@ let get_vars_from_string = fun str _vars direction position dico ->
 (* renvoie un booleen *)
 let is_crossing = fun word1 word2 ->
     if word1.direction = word2.direction then false
-    (* TODO match *)
     else let (vword, hword) = if word1.direction = Status.Vertical then (word1, word2)
                               else (word2, word1) in
 
@@ -107,25 +104,18 @@ let rec get_crossed = fun vars ->
 (* parcourt les lignes et colonnes de grid et renvoie une varriable list *)
 let get_vars = fun width height grid dico ->
     let vars = ref [] in
+    for i=0 to height-1 do
+	let line = String.sub grid (i*(width +1)) width in
+        vars := get_vars_from_string line !vars Status.Horizontal i dico;
+    done;
 
-    (* TODO a passer en for *)
-    let i = ref 0 in
-    while !i < height do
-        let line = String.sub grid (!i*(width +1)) width in
-        vars := get_vars_from_string line !vars Status.Horizontal !i dico;
-        incr i
-        done;
-
-    (* TODO a passer en for *)
-    let j = ref 0 in
-    while !j < width do
+    for j=0 to height-1 do
         let column = Bytes.create height in
         for index = 0 to Bytes.length column -1 do
-            Bytes.set column index (String.get grid (!j + index * (width + 1) ) )
+            Bytes.set column index (String.get grid (j + index * (width + 1) ) )
             done;
-        vars := get_vars_from_string (Bytes.to_string column) !vars Status.Vertical !j dico;
-        incr j;
-        done;
+        vars := get_vars_from_string (Bytes.to_string column) !vars Status.Vertical j dico;
+    done;
     get_crossed !vars;
     !vars
 
