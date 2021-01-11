@@ -3,20 +3,20 @@ let rec propagation = fun status var word ->
     let saved_status = Status.copy status in
     let id = Status.get_id var in
 
-	Status.update status word var;
+	Status.update status word var;			
 
         let rec run_neighbour = fun neighbour ->
 	    match neighbour with
-	    [] -> true (* On a parcouru tous les voisins en réduisant leur domaine sans les réduire à 0 *)
+	    [] -> true 					(* On a parcouru tous les voisins en réduisant leur domaine sans les réduire à 0 *)
         | head :: tail ->
             let domain = (Status.get_domain (Status.get_var status head)) in
-            if Dico.is_empty domain then false (* TODO if true then false ??? Barnier pas content *)
+            if Dico.is_empty domain then false
             else
                 if (List.length domain = 1) then begin
                     let (result_intern, status) = propagation status (Status.get_var status head) (List.nth domain 0) in
                     if result_intern then
                             run_neighbour tail
-                    else false (* TODO if true then false ??? Barnier pas content *)
+                    else false
                 end
                 else run_neighbour tail
         in
