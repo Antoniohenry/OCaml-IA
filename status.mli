@@ -23,7 +23,7 @@ val copy : status -> status (* deep copy *)
 val get_domain : variable -> domain
 val get_id : variable -> int
 val get_var : status -> int -> variable (** Renvoie UNE variable *)
-val get_crossed : variable -> int list (** Renvoie la liste des id des mots croissés *)
+val get_crossed : variable -> int list (** Renvoie la liste des id des mots croisés *)
 
 val select_var : status -> variable (** Renvoie la premiere variable de queue *)
 (* id, coord, length, direction, domain renvoie une variable *)
@@ -34,4 +34,4 @@ val update_queue : status -> unit (* à appeler apres l'update des domaines *)
 val update : status -> string -> variable -> unit (** Instanciation d'un mot à une variable *)
 
 val is_queue_empty : status -> bool
-val delete : status -> variable -> string -> unit (** Supression d'un mot ans le domain d'un variable  *)
+val delete : status -> variable -> string -> unit (** Suppression d'un mot dans le domain d'un variable  *)
