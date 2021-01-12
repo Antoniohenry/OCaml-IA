@@ -8,11 +8,12 @@ exception Back of bool (* Permet de savoir si on remonte dans l'arbre *)
 type count = {bt : int; propa : int ; sol : int}
 let count = ref {bt = 0; propa = 0; sol = 0}
 
-let print_count = fun count ->
+let print_count = fun count all ->
     let bt = count.bt in
     let propa = count.propa in
     let sol = count.sol in
-    Printf.printf "\nNombres de backtrack : %d \nNombres de propagations réussies : %d \nNombres de solution trouvées : %d\n \n" bt propa sol
+    Printf.printf "\nNombre de backtrack : %d \nNombre de propagations réussies : %d\n" bt propa; 
+    if all then Printf.printf "Numéro de la solution : %d \n" sol
 
 
 (* Appelée à chaque backtrack *)
@@ -36,14 +37,14 @@ let each_propa = fun status print ->
     count := {bt = bt; propa = propa + 1; sol = sol}
 
 (* Appelée à chaque solution *)
-let each_sol = fun status ->
+let each_sol = fun status all->
     Printf.printf "\nSolution :\n";
     Status.print_grid status;
     let bt = !count.bt in
     let propa = !count.propa in
     let sol = !count.sol in
     count := {bt = bt; propa = propa; sol = sol +1};
-    print_count !count
+    print_count !count all
 
 
 let rec bt = fun status all print_bt print_propa ->
@@ -52,9 +53,9 @@ let rec bt = fun status all print_bt print_propa ->
 
     if Status.is_queue_empty status then (* Si la file est vide on a une solution *)
     (* Ici on veut toutes les solutions donc on backtrack pour trouver les autres solutions *)
-    if all then begin each_sol status; raise (Back true) end
+    if all then begin each_sol status all; raise (Back true) end
     (* Sinon on leve une erreur pour arreter le programme à cette solution *)
-    else begin each_sol status; failwith "Solution" end
+    else begin each_sol status all; failwith "Solution" end
 
     else
         let var = Status.select_var status in
