@@ -35,7 +35,7 @@ let add = fun vars coord length direction domain constraints ->
     vars @ [Status.set_var id coord length direction _domain]
 
 
-(* transfomre un String en Char list *)
+(* transforme un String en Char list *)
 let explode = fun s ->
     List.init (String.length s) (String.get s)
 
