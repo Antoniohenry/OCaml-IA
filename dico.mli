@@ -3,7 +3,7 @@ type domain = string list
 (* affiche un domain *)
 val print : domain -> unit
 
-(* file_name, max_length -> tableau des domaines non flitres *)
+(* file_name, max_length -> tableau des domaines non filtres *)
 val get_dico : string -> int -> domain array
 
 (* domain, letter, index (commencant à 0) -> domaine filtre *)
