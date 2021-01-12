@@ -22,7 +22,7 @@ let get_grid = fun file_name ->
     (width, !height, Bytes.of_string grid)
 
 
-(* ajoute une variable a vars *)
+(* ajoute une variable a vars, renvoie vars *)
 let add = fun vars coord length direction domain constraints ->
     if length <= 1 then vars (* permet d'enlever les mots d'une lettre et les mots sans lettre (en fin de ligne) *)
     else let id = List.length vars in
@@ -44,6 +44,7 @@ let explode = fun s ->
     ajoute a la list _vars les variables contenues dans str (representant une ligne ou une colonne)
     direction = Horizontal | Vertical
     position est l'index de la ligne ou de la colonne dans la grille
+    renvoie vars
 *)
 let get_vars_from_string = fun str _vars direction position dico ->
 
@@ -79,12 +80,12 @@ let is_crossing = fun word1 word2 ->
     else let (vword, hword) = if word1.direction = Status.Vertical then (word1, word2)
                               else (word2, word1) in
 
-         let (h_line, hx) = hword.coord and (vy, v_col) = vword.coord in
+        let (h_line, hx) = hword.coord and (vy, v_col) = vword.coord in
+        (* -1 car les lignes et colonnes commencent à 0 *)
+        (hx <= v_col) && (v_col <= (hx + hword.length -1)) && (vy <= h_line) && (h_line <= (vy + vword.length -1))
 
-         (hx <= v_col) && (v_col <= (hx + hword.length -1)) && (vy <= h_line) && (h_line <= (vy + vword.length -1))
 
-
-(* complete les listes crossing de var1 et var2 si necessaire *)
+(* complete les listes crossing de var1 et var2 si necessaire, en place *)
 let check_crossing = fun var1 var2 ->
     if is_crossing var1 var2 then begin
         var1.crossing <- List.append var1.crossing [var2.id];
@@ -92,7 +93,7 @@ let check_crossing = fun var1 var2 ->
         end
 
 
-(* remplie toutes les listes crossing pour chaque var dans vars, renvoie unit *)
+(* remplie toutes les listes crossing pour chaque var dans vars, en place *)
 let rec get_crossed = fun vars ->
     match vars with
     [] -> ()
@@ -101,18 +102,18 @@ let rec get_crossed = fun vars ->
         get_crossed queue
 
 
-(* parcourt les lignes et colonnes de grid et renvoie une varriable list *)
+(* parcourt les lignes et colonnes de la grille et renvoie une varriable list *)
 let get_vars = fun width height grid dico ->
     let vars = ref [] in
     for i=0 to height-1 do
-	let line = String.sub grid (i*(width +1)) width in
+	let line = String.sub grid (i*(width +1)) width in (* +1 car il y a des \n à la fin des lignes *)
         vars := get_vars_from_string line !vars Status.Horizontal i dico;
     done;
 
     for j=0 to height-1 do
         let column = Bytes.create height in
         for index = 0 to Bytes.length column -1 do
-            Bytes.set column index (String.get grid (j + index * (width + 1) ) )
+            Bytes.set column index (String.get grid (j + index * (width + 1) ) ) (* +1 car il y a des \n à la fin des lignes *)
             done;
         vars := get_vars_from_string (Bytes.to_string column) !vars Status.Vertical j dico;
     done;
@@ -120,7 +121,7 @@ let get_vars = fun width height grid dico ->
     !vars
 
 
-(* transforme une grille rectangulaire sauvegardee en fichier.txt en liste de variables *)
+(* transforme une grille rectangulaire sauvegardee en fichier.txt en un status *)
 let read = fun fic_name dico_name ->
     let (width, heigth, grid) = get_grid fic_name in
     let dico = Dico.get_dico dico_name ((max width heigth) +1) in

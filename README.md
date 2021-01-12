@@ -1,29 +1,33 @@
 # OCaml-IA
 
-## How To Makefile 
-https://caml.inria.fr/pub/old_caml_site/FAQ/Makefile_ocaml-fra.html
+## Lancement du programme 
+    
+    ./main [file] [option] 
+    file : exemple.txt par defaut
+    Option 
+    all : recherche et affiche toutes les solutions 
+    print_bt : affiche la grille à chaque backtrack 
+    print_propa : affiche la grille à chaque propagation reussie
+    Toutes les options sont desactivées par défaut !
+
+###Exemple d'utilisation :
+
+    ./main grille.txt all
+    ./main all print_bt print_propa
+
 
 ## Format des données
 Les donnees sont des fichiers texte representant une grille rectangulaire avec 0 pour case vide, 1 pour case noire et la valeur de la lettre sinon \
 0e0 \
 10t \
-010 
+010
 
-## Affichage des étapes
-Décommenter les lignes suivantes pour obtenir l'affichage des étapes correspondantes :
+## How To Makefile
 
-Propagation : 
--L10 = actualisation grille
--L18 = afficher var fixées implicitement
-
-BT :
--L19 = file d'attente des vars à traiter 
--L20 = var selectionnée
--L30 = mot à placer
--L33 = propagation réussie 
--L39 = propagation échouée
+https://caml.inria.fr/pub/old_caml_site/FAQ/Makefile_ocaml-fra.html
 
 
 ## Documentation
-ocamldoc -html -d doc dico.mli status.mli reader.mli propagation.mli bt.mli main.ml
+    
+    ocamldoc -html -d doc dico.mli status.mli reader.mli propagation.mli bt.mli main.ml
 

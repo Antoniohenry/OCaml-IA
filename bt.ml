@@ -4,42 +4,81 @@ let save = fun status ->
 
 exception Back of bool (* Permet de savoir si on remonte dans l'arbre *)
 
+(* Utilisé dans les affichages *)
+type count = {bt : int; propa : int ; sol : int}
+let count = ref {bt = 0; propa = 0; sol = 0}
 
-let rec bt = fun status ->
+let print_count = fun count ->
+    let bt = count.bt in
+    let propa = count.propa in
+    let sol = count.sol in
+    Printf.printf "\nNombres de backtrack : %d \nNombres de propagations réussies : %d \nNombres de solution trouvées : %d\n \n" bt propa sol
 
-    Printf.printf " \n \nnouveau bt \n";
+
+(* Appellée à chaque backtrack *)
+let each_bt = fun status print ->
+    if print then begin
+    Printf.printf "\nBacktrack ! \n";
+    Status.print_grid status end;
+    let bt = !count.bt in
+    let propa = !count.propa in
+    let sol = !count.sol in
+    count := {bt = bt + 1; propa = propa; sol = sol}
+
+(* Appellée à chaque propagation reussie *)
+let each_propa = fun status print ->
+    if print then begin
+    Printf.printf "\nPropagation reussie ! \n";
+    Status.print_grid status end;
+    let bt = !count.bt in
+    let propa = !count.propa in
+    let sol = !count.sol in
+    count := {bt = bt; propa = propa + 1; sol = sol}
+
+(* Appellée à chaque solution *)
+let each_sol = fun status ->
+    Printf.printf "\nSolution :\n";
     Status.print_grid status;
+    let bt = !count.bt in
+    let propa = !count.propa in
+    let sol = !count.sol in
+    count := {bt = bt; propa = propa; sol = sol +1};
+    print_count !count
+
+
+let rec bt = fun status all print_bt print_propa ->
 
     let status_saved = save status in (* sauvegarde du statut *)
-    (*Printf.printf "grille sauvegardée: \n"; Status.print_grid status_saved; *)
 
-    if Status.is_queue_empty status then begin (Status.print_grid status); failwith "Solution" end
+    if Status.is_queue_empty status then (* Si la file est vide on a une solution *)
+    (* Ici on veut toutes les solutions donc on backtrack pour trouver les autres solutions *)
+    if all then begin each_sol status; raise (Back true) end
+    (* Sinon on leve une erreur pour arreter le programme à cette solution *)
+    else begin each_sol status; failwith "Solution" end
+
     else
         let var = Status.select_var status in
-        Printf.printf "\nvariable selectionnée : "; Status.print_var var;
 
         (* On parcourt le domain de la variable sélectionnée *)
         let rec run = fun status domain ->
             match domain with
             (* On a parcouru tout le domaine sans trouver la solution *)
-            [] -> Printf.printf "Backtrack ! \n"; raise (Back true) (* On doit remonter dans l'arbre *)
+            [] -> each_bt status print_bt; raise (Back true) (* On doit remonter dans l'arbre *)
 
             (* On teste la propagation sur chaque mot du domaine *)
             | word :: remain_domain ->
-                Printf.printf "mot à placer %s :" word;
                 let (propa_result, status_apres_propa) = Propagation.propagation status var word in
                 if propa_result then begin
-                    Printf.printf "propagation réussie \n";
-
+                    each_propa status print_propa;
                     (* Dans tous les cas on evalue 'bt status_apres_propa' ie on plonge dans l'arbre *)
                     (* si true alors c'est qu'apres avoir plongé dans l'arbre on veut backtracker sur ce noeud -> il suffit d'abandonner le mot fixé précedement pour passer au mot suivant *)
-                    if bt status_apres_propa then begin Status.delete status_saved var word; run status_saved remain_domain end end (* c'est cette ligne qui gere la pile des appels recursifs *)
+                    if bt status_apres_propa all print_bt print_propa then begin Status.delete status_saved var word; run status_saved remain_domain end end (* c'est cette ligne qui gere la pile des appels recursifs *)
                 else begin
-                    Printf.printf "propa echouée \n";
                     run status_apres_propa remain_domain end
             in
         try
-        run status var.domain; false (* On arrive jamais ici maisil faut lever un booleen pour la compilation *)
+        run status var.domain;
+        false (* On arrive jamais ici (run ne peut que lever une exception Back) mais il fautun booleen pour la compilation *)
 
         (* Si on parcourt tout le domain sans propagation reussie alors il faut backtracker ie bt doit renvoyer true *)
         with Back bl -> bl

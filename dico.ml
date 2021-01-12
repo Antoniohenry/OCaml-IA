@@ -1,7 +1,3 @@
-(*module dictionary*)
-
-(*generate_dictionary dico.txt *) 
-(*fournit un tableau de mot trié selon la taille ou par ordre alphabetique *)
 
 type domain = string list
 
@@ -11,6 +7,7 @@ let get_domain = fun file_name length -> (* length : longeur de la variable *)
     let rec reader = fun words ->
         try
             let word = input_line file in
+            (* on enleve les mots contenant un espace (expression) et les mots qui n'ont pas la bonne longeur *)
             if (String.contains word ' ') || String.length word != length  then reader words else reader (words @ [word])
         with End_of_file -> close_in file; words (* lorsqu'il n'y a plus de ligne à lire on ferme le fichier *)
     in
@@ -25,20 +22,16 @@ let print = fun domain ->
     Printf.printf "%s" (run_througth domain "")
 
 
+(* Renvoie le tableau des domaines *)
 let get_dico = fun file_name max_length -> (* max_length : taille maximale de la grille *)
     Array.init max_length (get_domain file_name)
 
 
+(* renvoie le nouveau domain filtré des mots n'ayant pas car en position index (commence à 0) *)
 let filter = fun domain car index ->
     let is_good = fun word ->
     word.[index] = car in
     List.filter is_good domain
-
-
-let next = fun domain ->
-    match domain with
-    [] -> raise Not_found
-    | word :: domain -> (word, domain)
 
 
 let is_empty = fun domain ->

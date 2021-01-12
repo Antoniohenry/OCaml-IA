@@ -1,21 +1,14 @@
 type domain = string list
 
-
-(* file_name, length -> domain (non filtre) *)
-val get_domain : string -> int -> string list
-(* Domain_init *)
-
 (* affiche un domain *)
-val print : string list -> unit
+val print : domain -> unit
 
 (* file_name, max_length -> tableau des domaines non flitres *)
-val get_dico : string -> int -> string list array
+val get_dico : string -> int -> domain array
 
 (* domain, letter, index (commencant à 0) -> domaine filtre *)
-val filter : string list -> char -> int -> string list
+val filter : domain -> char -> int -> domain
 
-val next : 'a list -> 'a * 'a list
-
-val is_empty : 'a list -> bool
+val is_empty : domain -> bool
 
 val length : domain -> int
