@@ -15,7 +15,7 @@ let print_count = fun count ->
     Printf.printf "\nNombres de backtrack : %d \nNombres de propagations réussies : %d \nNombres de solution trouvées : %d\n \n" bt propa sol
 
 
-(* Appellée à chaque backtrack *)
+(* Appelée à chaque backtrack *)
 let each_bt = fun status print ->
     if print then begin
     Printf.printf "\nBacktrack ! \n";
@@ -25,7 +25,7 @@ let each_bt = fun status print ->
     let sol = !count.sol in
     count := {bt = bt + 1; propa = propa; sol = sol}
 
-(* Appellée à chaque propagation reussie *)
+(* Appelée à chaque propagation reussie *)
 let each_propa = fun status print ->
     if print then begin
     Printf.printf "\nPropagation reussie ! \n";
@@ -35,7 +35,7 @@ let each_propa = fun status print ->
     let sol = !count.sol in
     count := {bt = bt; propa = propa + 1; sol = sol}
 
-(* Appellée à chaque solution *)
+(* Appelée à chaque solution *)
 let each_sol = fun status ->
     Printf.printf "\nSolution :\n";
     Status.print_grid status;
