@@ -26,7 +26,7 @@ let print_var = fun var ->
     let (x,y) = var.coord in
     let dir = if var.direction = Horizontal then "horizontal" else "vertical" in
 
-    (* parcourt la liste d'entier crossed et renvoie la chaine de caractere coreespondante *)
+    (* parcourt la liste d'entier crossed et renvoie la chaine de caractere correspondante *)
     let crossed = var.crossing in
     let rec run_crossed = fun str crossed index ->
         match crossed with
@@ -179,7 +179,7 @@ let update_queue = fun status ->
     (* permet d'enlever les variables déjà instanciées (notamment celle qu'on vient juste d'intancier lors de la propa) *)
     let vars = List.filter (fun var -> (List.length var.domain > 1))  status.vars in
 
-    (* fonction de tri sur la longeur du domaine *)
+    (* fonction de tri sur la longueur du domaine *)
     let comp = fun var1 var2 ->
         compare (Dico.length (get_domain var1)) (Dico.length (get_domain var2))
         in
