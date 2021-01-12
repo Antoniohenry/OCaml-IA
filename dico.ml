@@ -7,7 +7,7 @@ let get_domain = fun file_name length -> (* length : longeur de la variable *)
     let rec reader = fun words ->
         try
             let word = input_line file in
-            (* on enleve les mots contenant un espace (expression) et les mots qui n'ont pas la bonne longeur *)
+            (* on enleve les mots contenant un espace (expression) et les mots qui n'ont pas la bonne longueur *)
             if (String.contains word ' ') || String.length word != length  then reader words else reader (words @ [word])
         with End_of_file -> close_in file; words (* lorsqu'il n'y a plus de ligne à lire on ferme le fichier *)
     in
