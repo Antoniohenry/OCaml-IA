@@ -8,7 +8,7 @@ let rec propagation = fun status var word ->
 
         let rec run_neighbour = fun neighbour -> (* Propagation des contraintes aux voisins *)
 	    match neighbour with
-	    [] -> true 					(* On a parcouru tous les voisins en réduisant leur domaine sans les réduire à 0 *)
+	    [] -> true 					(* On a parcouru tous les voisins en réduisant leurs domaines sans les réduire à 0 *)
         | head :: tail ->
             let domain = (Status.get_domain (Status.get_var status head)) in
             if Dico.is_empty domain then false (* Les contraintes ont vidé un domaine d'un voisin, propagation echouée *)
