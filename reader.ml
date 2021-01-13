@@ -32,6 +32,9 @@ let add = fun vars coord length direction domain constraints ->
         | (letter, index) :: queue -> run_constraints queue (Dico.filter domain letter index)
         in
     let _domain = run_constraints constraints domain in
+    if Dico.is_empty _domain then begin
+    Status.print_var (Status.set_var id coord length direction _domain);
+    failwith "Cette grille n'a pas de solution : domaine initialement vide" end;
     vars @ [Status.set_var id coord length direction _domain]
 
 
@@ -59,7 +62,7 @@ let get_vars_from_string = fun str _vars direction position dico ->
             vars := add !vars coord length direction dico.(length) constraints
         | head :: queue ->
             begin match head with
-            '1' ->
+           '1' ->
                 let coord = if direction = Status.Horizontal then (position, index)
                             else (index, position) in
                 vars := add !vars coord length direction dico.(length) constraints;
@@ -110,7 +113,7 @@ let get_vars = fun width height grid dico ->
         vars := get_vars_from_string line !vars Status.Horizontal i dico;
     done;
 
-    for j=0 to height-1 do
+    for j=0 to width -1 do
         let column = Bytes.create height in
         for index = 0 to Bytes.length column -1 do
             Bytes.set column index (String.get grid (j + index * (width + 1) ) ) (* +1 car il y a des \n à la fin des lignes *)
